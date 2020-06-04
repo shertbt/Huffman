@@ -120,11 +120,13 @@ void decode_output_file(string out_name, string message)
 
 	file.close();
 }
+
 int main()
 {
 	map<char, int> freq;
 	string text;
 	text = get_data(filename_input);
+	int original_len = text.size()*8;
 	freq = get_frequency(text);
 	Tree Huff;
 	Huff.Build_Tree(freq);
@@ -134,6 +136,8 @@ int main()
 	encode = encode_text(text, table);
 	string out_name;
 	encode_output_file(out_name, encode, freq);
+	int encode_file_len = encode.size()+freq.size()*8+freq.size()*32+32;
+	int compression = original_len / encode_file_len;
 	string decode;
 	decode = decode_data(filename);
 	decode_output_file(out_name,decode);
