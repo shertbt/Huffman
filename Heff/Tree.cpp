@@ -9,7 +9,10 @@ Tree::Tree()
 {
     root = nullptr;
 }
-
+Tree::~Tree()
+{
+    delete root;
+}
 std::map <char, std::string> Tree::Build_Table(Node* root)
 {
     std::map<char, std::string> table;

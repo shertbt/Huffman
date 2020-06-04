@@ -14,6 +14,11 @@ Node::Node(Node* r, Node* l)
 	right = r;
 	freq = l->freq + r->freq;
 }
+Node::~Node()
+{
+    delete (this->left);
+    delete (this->right);
+}
 
 /*Node& Node::operator=(const Node& object) {
     if (this != &object) {

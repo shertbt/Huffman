@@ -10,6 +10,7 @@ private:
 
 public:
 	Node();
+	~Node();
 	Node(Node* r, Node* l);
 	//Node& operator=(const Node& object);
 	struct Compare {

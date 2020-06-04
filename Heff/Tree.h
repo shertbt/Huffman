@@ -14,4 +14,5 @@ class Tree
 		std::map <char, std::string> Build_Table(Node *root);
 		void Build_Tree(std::map<char, int> freq);
 		std::map <char, std::string> get_Table();
+		~Tree();
 };
