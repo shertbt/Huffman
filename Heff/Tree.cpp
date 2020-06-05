@@ -13,26 +13,22 @@ Tree::~Tree()
 {
     delete root;
 }
-std::map <char, std::string> Tree::Build_Table(Node* root)
+void Tree::Build_Table(Node* root,std::vector<bool> code,std::map<char, std::vector<bool>>&table)
 {
-    std::map<char, std::string> table;
-    std::string code;
+    
     if (root->left != NULL) {
-        code += '0';
-        Build_Table(root->left);
+        code.push_back(0);
+        Build_Table(root->left,code,table);
     }
     if (root->right != NULL) {
-        code += '1';
-        Build_Table(root->right);
+        code.push_back(1);
+        Build_Table(root->right,code,table);
     }
     if (root->left == NULL && root->right == NULL) {
         table[root->sym] = code;
    
     }
-    if (!code.empty())
-        code.pop_back();
-
-    return table;
+   
 }
 
 void Tree::Build_Tree(std::map<char, int> freq)
@@ -58,9 +54,13 @@ void Tree::Build_Tree(std::map<char, int> freq)
         freq_list.push_back(parent);
     }
    root = freq_list.front();
+   
 }
 
-std::map <char, std::string> Tree::get_Table()
+std::map <char, std::vector<bool>> Tree::get_Table()
 {
-    return(Build_Table(root));
+    std::map<char, std::vector<bool>> table;
+    std::vector<bool> code;
+    Build_Table(root, code, table);
+    return table;
 }

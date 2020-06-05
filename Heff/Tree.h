@@ -11,8 +11,8 @@ class Tree
 		Node *root;
 	public:
 		Tree();
-		std::map <char, std::string> Build_Table(Node *root);
+		void Build_Table(Node* root , std::vector<bool> code, std::map<char, std::vector<bool>> & table);
 		void Build_Tree(std::map<char, int> freq);
-		std::map <char, std::string> get_Table();
+		std::map <char, std::vector<bool>> get_Table();
 		~Tree();
 };

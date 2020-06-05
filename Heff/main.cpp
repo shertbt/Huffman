@@ -35,12 +35,25 @@ map<char, int> get_frequency(string text)//получение частоты символов
 	}
 	return freq;
 }
-string encode_text(string text, map<char, string> table)
+string encode_text(string text, map<char, std::vector<bool>> table)
 {
 	string result = "";
+	char s = 0;
+	int count = 0;
 	for (char symbol : text)
 	{
-		result += table[symbol];
+		vector<bool> code = table[symbol];
+		for (int n = 0; n < code.size(); n++)
+		{
+			s = s | code[n] << (7 - count);
+			count++;
+			if (count == 8)
+			{
+				count = 0;
+				result += s;
+				s = 0;
+			}
+		}
 	}
 	return result;
 }
@@ -54,7 +67,7 @@ void encode_output_file(string out_name, string message, map<char, int> freq)
 	{
 		file << it->first << it->second;
 	}
-
+	
 	for (int i = 0; i < message.size(); i++)
 	{
 			file << message[i];
@@ -63,9 +76,9 @@ void encode_output_file(string out_name, string message, map<char, int> freq)
 	
 	file.close();
 }
-string decode_data(string filename)
+/*string decode_data(string filename)
 {
-	string text;
+	string text="";
 	ifstream input(filename, ios::in);
 	int alphabet_size = 0;
 	input >> alphabet_size;
@@ -93,53 +106,44 @@ string decode_data(string filename)
 	}
 	Tree Huff;
 	Huff.Build_Tree(freq);
-	map<char, string> table;
+	map<char, vector<bool>> table;
 	table = Huff.get_Table();
 
-	for (map<char, string>::iterator it = table.begin(); it != table.end(); ++it)
-	{
-		int replace_position = text.find(it->second);
-		string tmp;
-		tmp.push_back((char)it->first);
-		text.replace(replace_position, it->second.size(), tmp);
-	}
-
-
 	return text;
-}
+}*/
 void decode_output_file(string out_name, string message)
 {
-	fstream file;
-	file.open(out_name, ios::out);
+	ofstream file(out_name, ios::out);
 	
 	for (int i = 0; i < message.size(); i++)
 	{
 		file << message[i];
 	}
 
-
-	file.close();
 }
 
 int main()
 {
 	map<char, int> freq;
 	string text;
-	text = get_data(filename_input);
-	int original_len = text.size()*8;
+	text = get_data("C:\\Users\\ƒмитрий\\Desktop\\input.txt");
+	//cout << text << endl; 
+	//int original_len = text.size()*8;
 	freq = get_frequency(text);
 	Tree Huff;
 	Huff.Build_Tree(freq);
-	map<char, string> table;
+	map<char, std::vector<bool>> table;
 	table = Huff.get_Table();
+	
 	string encode;
 	encode = encode_text(text, table);
-	string out_name;
-	encode_output_file(out_name, encode, freq);
-	int encode_file_len = encode.size()+freq.size()*8+freq.size()*32+32;
-	int compression = original_len / encode_file_len;
-	string decode;
-	decode = decode_data(filename);
-	decode_output_file(out_name,decode);
+	
+	encode_output_file("C:\\Users\\ƒмитрий\\Desktop\\output.txt", encode, freq);
+	//int encode_file_len = encode.size()+freq.size()*8+freq.size()*32+32;
+	//int compression = original_len / encode_file_len;
+	//string decode;
+	//decode = decode_data("C:\\Users\\ƒмитрий\\Desktop\\output.txt");
+	//cout << decode << endl;
+	//decode_output_file("C:\\Users\\ƒмитрий\\Desktop\\decode.txt",decode);
 	return 0;
 }
