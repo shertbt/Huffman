@@ -18,17 +18,16 @@ void Tree::Build_Table(Node* root,std::vector<bool> code,std::map<char, std::vec
     
     if (root->left != NULL) {
         code.push_back(0);
-        Build_Table(root->left,code,table);
-    }
-    if (root->right != NULL) {
+        Build_Table(root->left, code,table);
+        code.pop_back();
         code.push_back(1);
         Build_Table(root->right,code,table);
     }
-    if (root->left == NULL && root->right == NULL) {
+    else {
         table[root->sym] = code;
-   
-    }
-   
+        
+}
+    
 }
 
 void Tree::Build_Tree(std::map<char, int> freq)

@@ -11,7 +11,7 @@ private:
 public:
 	Node();
 	~Node();
-	Node(Node* r, Node* l);
+	Node(Node* l, Node*r );
 	//Node& operator=(const Node& object);
 	struct Compare {
 		bool operator() (const Node* l, const Node* r) const 
