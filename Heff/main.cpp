@@ -76,9 +76,10 @@ void encode_output_file(string out_name, string message, map<char, int> freq)
 	
 	file.close();
 }
-/*string decode_data(string filename)
+string decode_data(string filename)
 {
 	string text="";
+	string message = "";
 	ifstream input(filename, ios::in);
 	int alphabet_size = 0;
 	input >> alphabet_size;
@@ -88,12 +89,15 @@ void encode_output_file(string out_name, string message, map<char, int> freq)
 	map<char, int> freq;
 	while (i != alphabet_size) 
 	{
-		letter = input.get(); 
+		letter=input.get(); 
 		input >> n; 
 		freq[letter] = n;
 		i++;
 	}
-	
+	for (map<char, int>::iterator it = freq.begin(); it != freq.end(); ++it)
+	{
+		cout << it->first << " - " << it->second << endl;
+	}
 	while (!input.eof())
 	{
 		string temp;
@@ -106,11 +110,10 @@ void encode_output_file(string out_name, string message, map<char, int> freq)
 	}
 	Tree Huff;
 	Huff.Build_Tree(freq);
-	map<char, vector<bool>> table;
-	table = Huff.get_Table();
+	//message = Huff.get_message(text);
+	return message;
+}
 
-	return text;
-}*/
 void decode_output_file(string out_name, string message)
 {
 	ofstream file(out_name, ios::out);
@@ -127,18 +130,19 @@ int main()
 	map<char, int> freq;
 	string text;
 	text = get_data("C:\\Users\\ִלטענטי\\Desktop\\input.txt");
-	//cout << text << endl; 
+	//cout << text << endl;
 	//int original_len = text.size()*8;
 	freq = get_frequency(text);
 	Tree Huff;
 	Huff.Build_Tree(freq);
 	map<char, std::vector<bool>> table;
 	table = Huff.get_Table();
+
+	//string encode;
+	//encode = encode_text(text, table);
+
+	//encode_output_file("C:\\Users\\ִלטענטי\\Desktop\\output.txt", encode, freq);
 	
-	string encode;
-	encode = encode_text(text, table);
-	
-	encode_output_file("C:\\Users\\ִלטענטי\\Desktop\\output.txt", encode, freq);
 	//int encode_file_len = encode.size()+freq.size()*8+freq.size()*32+32;
 	//int compression = original_len / encode_file_len;
 	//string decode;

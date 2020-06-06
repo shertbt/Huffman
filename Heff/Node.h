@@ -16,7 +16,7 @@ public:
 	struct Compare {
 		bool operator() (const Node* l, const Node* r) const 
 		{
-			return l->freq < r->freq;
+			return (l->freq < r->freq);
 		}
 	};
 

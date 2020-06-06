@@ -64,3 +64,31 @@ std::map <char, std::vector<bool>> Tree::get_Table()
     Build_Table(root, code, table);
     return table;
 }
+
+/*std::string Tree::get_message(std::string text)
+{
+    Node* p = root;
+    std::string message = "";
+    int count = 0;
+    char symbol = 0;
+    
+    for (char byte : text)
+    {
+        
+        bool b = byte & (1 << (7 - count));
+        if (p) p = p->right;
+        else p = p->left;
+        count++;
+        
+        if (p->left == nullptr && p->right == nullptr)
+        {
+            symbol = p->sym;
+            p = root;  count = 0;
+            //break;
+        }
+        
+        message += symbol;
+      
+    }
+    return message;
+}*/

@@ -8,7 +8,7 @@ Node::Node()
     freq = 0;
 }
 
-Node::Node(Node* r, Node* l)
+Node::Node(Node* l, Node* r)
 {
 	left = l;
 	right = r;
