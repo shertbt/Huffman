@@ -64,7 +64,7 @@ std::map <char, std::vector<bool>> Tree::get_Table()
     return table;
 }
 
-/*std::string Tree::get_message(std::string text)
+std::string Tree::get_message(std::string text)
 {
     Node* p = root;
     std::string message = "";
@@ -73,21 +73,21 @@ std::map <char, std::vector<bool>> Tree::get_Table()
     
     for (char byte : text)
     {
-        
-        bool b = byte & (1 << (7 - count));
-        if (p) p = p->right;
-        else p = p->left;
-        count++;
-        
-        if (p->left == nullptr && p->right == nullptr)
+        while (count != 8)
         {
-            symbol = p->sym;
-            p = root;  count = 0;
-            //break;
-        }
-        
-        message += symbol;
-      
+            bool b = byte & (1 << (7 - count));
+            if (b==1) p = p->right;
+            else p = p->left;
+            if (p->left == NULL && p->right == NULL)
+            {
+                symbol = p->sym;
+                message += symbol;
+                p = root; 
+              
+            }
+            count++;
+        }  
+        count = 0;
     }
     return message;
-}*/
+}

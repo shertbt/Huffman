@@ -55,6 +55,7 @@ string encode_text(string text, map<char, std::vector<bool>> table)
 			}
 		}
 	}
+	if(count!=0) result += s;
 	return result;
 }
 void encode_output_file(string out_name, string message, map<char, int> freq)
@@ -108,9 +109,10 @@ string decode_data(string filename)
 		}
 		text += temp;
 	}
+	
 	Tree Huff;
 	Huff.Build_Tree(freq);
-	//message = Huff.get_message(text);
+	message = Huff.get_message(text);
 	return message;
 }
 
@@ -133,10 +135,10 @@ int main()
 	//cout << text << endl;
 	//int original_len = text.size()*8;
 	freq = get_frequency(text);
-	Tree Huff;
-	Huff.Build_Tree(freq);
-	map<char, std::vector<bool>> table;
-	table = Huff.get_Table();
+	//Tree Huff;
+	//Huff.Build_Tree(freq);
+	//map<char, std::vector<bool>> table;
+	//table = Huff.get_Table();
 
 	//string encode;
 	//encode = encode_text(text, table);
@@ -145,9 +147,9 @@ int main()
 	
 	//int encode_file_len = encode.size()+freq.size()*8+freq.size()*32+32;
 	//int compression = original_len / encode_file_len;
-	//string decode;
-	//decode = decode_data("C:\\Users\\ִלטענטי\\Desktop\\output.txt");
-	//cout << decode << endl;
+	string decode;
+	decode = decode_data("C:\\Users\\ִלטענטי\\Desktop\\output.txt");
+	cout << decode << endl;
 	//decode_output_file("C:\\Users\\ִלטענטי\\Desktop\\decode.txt",decode);
 	return 0;
 }
