@@ -15,5 +15,5 @@ class Tree
 		void Build_Tree(std::map<char, int> freq);
 		std::map <char, std::vector<bool>> get_Table();
 		~Tree();
-		std::string get_message(std::string text);
+		std::string get_message(std::string text,int dif);
 };

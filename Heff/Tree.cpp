@@ -64,15 +64,16 @@ std::map <char, std::vector<bool>> Tree::get_Table()
     return table;
 }
 
-std::string Tree::get_message(std::string text)
+std::string Tree::get_message(std::string text,int dif)
 {
     Node* p = root;
     std::string message = "";
     int count = 0;
     char symbol = 0;
-    
-    for (char byte : text)
+    char byte = 0;
+    for (int i=0;i<text.size()-1;i++)
     {
+        byte = text[i];
         while (count != 8)
         {
             bool b = byte & (1 << (7 - count));
@@ -88,6 +89,22 @@ std::string Tree::get_message(std::string text)
             count++;
         }  
         count = 0;
+    }
+    int j = text.size()-1;
+    byte = text[j];
+     while (count != (8 - dif))
+    {
+        bool b = byte & (1 << (7 - count));
+        if (b == 1) p = p->right;
+        else p = p->left;
+        if (p->left == NULL && p->right == NULL)
+        {
+            symbol = p->sym;
+            message += symbol;
+            p = root;
+
+        }
+        count++;
     }
     return message;
 }

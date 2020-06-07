@@ -58,16 +58,24 @@ string encode_text(string text, map<char, std::vector<bool>> table)
 	if(count!=0) result += s;
 	return result;
 }
-void encode_output_file(string out_name, string message, map<char, int> freq)
+void writeHeader(string out_name, map<char, int> freq, int dif)
 {
+	fstream tab(out_name, ios::binary | ios::app);
 	int alphabet_size = freq.size();
-	fstream file;
-	file.open(out_name, ios::out);
-	file << alphabet_size;
+	tab.write((char*)&dif, sizeof(char));
+	tab.write((char*)&alphabet_size, sizeof(int));
 	for (map<char, int>::iterator it = freq.begin(); it != freq.end(); ++it)
 	{
-		file << it->first << it->second;
+		tab.write((char*)&it->first,sizeof(char));
+		tab.write((char*)&it->second,sizeof(int));
 	}
+	tab.close();
+}
+void encode_output_file(string out_name, string message, map<char, int> freq,int dif)
+{
+	writeHeader(out_name, freq, dif);
+	fstream file;
+	file.open(out_name, ios::app);
 	
 	for (int i = 0; i < message.size(); i++)
 	{
@@ -77,42 +85,54 @@ void encode_output_file(string out_name, string message, map<char, int> freq)
 	
 	file.close();
 }
-string decode_data(string filename)
+string readHeader(string filename,map<char, int>& freq,int &dif)
 {
-	string text="";
-	string message = "";
-	ifstream input(filename, ios::in);
+	string text = "";
+	fstream tab(filename, ios::binary | ios::in);
 	int alphabet_size = 0;
-	input >> alphabet_size;
+	int dif_bit = 0;
+	tab.read((char*)&dif_bit, sizeof(char));
+	dif = dif_bit;
+	tab.read((char*)&alphabet_size, sizeof(int));
 	int i = 0;
-	char letter = 0;
+	char letter;
 	int n = 0;
-	map<char, int> freq;
-	while (i != alphabet_size) 
+	while (i != alphabet_size)
 	{
-		letter=input.get(); 
-		input >> n; 
+		tab.read((char*)&letter, sizeof(char));
+		tab.read((char*)&n, sizeof(int));
 		freq[letter] = n;
 		i++;
 	}
-	for (map<char, int>::iterator it = freq.begin(); it != freq.end(); ++it)
-	{
-		cout << it->first << " - " << it->second << endl;
-	}
-	while (!input.eof())
+	
+	while (!tab.eof())
 	{
 		string temp;
-		getline(input, temp);
-		if (!input.eof())
+		getline(tab, temp);
+		if (!tab.eof())
 		{
 			temp += '\n';
 		}
 		text += temp;
 	}
-	
+	return text;
+}
+string decode_data(string filename)
+{
+	string text="";
+	string message = "";
+	map<char, int> freq;
+	int dif = 0;
+	text=readHeader(filename, freq, dif);
+	/*for (map<char, int>::iterator it = freq.begin(); it != freq.end(); ++it)
+	{
+		cout << it->first << " - " << it->second << endl;
+	}
+	cout << text<<endl;
+	cout << dif << endl;*/
 	Tree Huff;
 	Huff.Build_Tree(freq);
-	message = Huff.get_message(text);
+	message = Huff.get_message(text,dif);
 	return message;
 }
 
@@ -132,24 +152,27 @@ int main()
 	map<char, int> freq;
 	string text;
 	text = get_data("C:\\Users\\ִלטענטי\\Desktop\\input.txt");
-	//cout << text << endl;
-	//int original_len = text.size()*8;
 	freq = get_frequency(text);
-	//Tree Huff;
-	//Huff.Build_Tree(freq);
-	//map<char, std::vector<bool>> table;
-	//table = Huff.get_Table();
-
-	//string encode;
-	//encode = encode_text(text, table);
-
-	//encode_output_file("C:\\Users\\ִלטענטי\\Desktop\\output.txt", encode, freq);
-	
-	//int encode_file_len = encode.size()+freq.size()*8+freq.size()*32+32;
-	//int compression = original_len / encode_file_len;
+	Tree Huff;
+	Huff.Build_Tree(freq);
+	map<char, std::vector<bool>> table;
+	table = Huff.get_Table();
+	int len = 0;
+	for (map<char, int>::iterator it = freq.begin(); it != freq.end(); ++it)
+	{
+		std::vector<bool> code = table[it->first];
+		int f = it->second;
+		len += (f * code.size());
+	}
+	string encode;
+	encode = encode_text(text, table);
+	int en_len = encode.length() * 8;
+	int difference=en_len-len;
+	encode_output_file("C:\\Users\\ִלטענטי\\Desktop\\output.txt", encode, freq,difference);
 	string decode;
 	decode = decode_data("C:\\Users\\ִלטענטי\\Desktop\\output.txt");
 	cout << decode << endl;
-	//decode_output_file("C:\\Users\\ִלטענטי\\Desktop\\decode.txt",decode);
+	decode_output_file("C:\\Users\\ִלטענטי\\Desktop\\decode.txt",decode);
+
 	return 0;
 }
