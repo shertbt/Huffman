@@ -1,5 +1,6 @@
 #include <iostream>
 #include <map>
+#include <iomanip>
 #include <fstream>
 #include <list>
 #include <vector>
@@ -75,7 +76,7 @@ void encode_output_file(string out_name, string message, map<char, int> freq,int
 {
 	writeHeader(out_name, freq, dif);
 	fstream file;
-	file.open(out_name, ios::app);
+	file.open(out_name,ios::binary | ios::app);
 	
 	for (int i = 0; i < message.size(); i++)
 	{
@@ -124,12 +125,12 @@ string decode_data(string filename)
 	map<char, int> freq;
 	int dif = 0;
 	text=readHeader(filename, freq, dif);
-	/*for (map<char, int>::iterator it = freq.begin(); it != freq.end(); ++it)
+	for (map<char, int>::iterator it = freq.begin(); it != freq.end(); ++it)
 	{
 		cout << it->first << " - " << it->second << endl;
 	}
-	cout << text<<endl;
-	cout << dif << endl;*/
+	//cout << text<<endl;
+	//cout << dif << endl;
 	Tree Huff;
 	Huff.Build_Tree(freq);
 	message = Huff.get_message(text,dif);
@@ -151,13 +152,17 @@ int main()
 {
 	map<char, int> freq;
 	string text;
-	text = get_data("C:\\Users\\ִלטענטי\\Desktop\\input.txt");
+	text = get_data("C:\\Users\\ִלטענטי\\Desktop\\warandpeace.txt");
 	freq = get_frequency(text);
 	Tree Huff;
 	Huff.Build_Tree(freq);
 	map<char, std::vector<bool>> table;
 	table = Huff.get_Table();
 	int len = 0;
+	/*for (map<char, int>::iterator it = freq.begin(); it != freq.end(); ++it)
+	{
+		cout << it->first << " - " << it->second << endl;
+	}*/
 	for (map<char, int>::iterator it = freq.begin(); it != freq.end(); ++it)
 	{
 		std::vector<bool> code = table[it->first];
@@ -167,12 +172,12 @@ int main()
 	string encode;
 	encode = encode_text(text, table);
 	int en_len = encode.length() * 8;
-	int difference=en_len-len;
+	int difference = en_len - len; cout << difference << endl;
 	encode_output_file("C:\\Users\\ִלטענטי\\Desktop\\output.txt", encode, freq,difference);
 	string decode;
 	decode = decode_data("C:\\Users\\ִלטענטי\\Desktop\\output.txt");
-	cout << decode << endl;
 	decode_output_file("C:\\Users\\ִלטענטי\\Desktop\\decode.txt",decode);
-
+	float coef =(float) text.length()/(encode.length()+5+freq.size()*5);
+	cout << fixed << setprecision(2) <<coef << endl;
 	return 0;
 }

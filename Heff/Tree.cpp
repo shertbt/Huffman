@@ -90,6 +90,7 @@ std::string Tree::get_message(std::string text,int dif)
         }  
         count = 0;
     }
+    count = 0;
     int j = text.size()-1;
     byte = text[j];
      while (count != (8 - dif))
