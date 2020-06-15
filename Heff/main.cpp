@@ -6,10 +6,11 @@
 #include <vector>
 #include <string>
 #include "Tree.h"
+#include <windows.h>
 
 using namespace std;
 
-string get_data(string filename)//считывание текста из файла в text
+string get_data(string filename)
 {
 	string text;
 	ifstream input(filename, ios::in);
@@ -27,7 +28,7 @@ string get_data(string filename)//считывание текста из файла в text
 	return text;
 }
 
-map<char, int> get_frequency(string text)//получение частоты символов
+map<char, int> get_frequency(string text)
 {
 	map<char, int> freq;
 	for (char b : text)
@@ -125,10 +126,10 @@ string decode_data(string filename)
 	map<char, int> freq;
 	int dif = 0;
 	text=readHeader(filename, freq, dif);
-	for (map<char, int>::iterator it = freq.begin(); it != freq.end(); ++it)
+	/*for (map<char, int>::iterator it = freq.begin(); it != freq.end(); ++it)
 	{
 		cout << it->first << " - " << it->second << endl;
-	}
+	}*/
 	//cout << text<<endl;
 	//cout << dif << endl;
 	Tree Huff;
@@ -150,34 +151,61 @@ void decode_output_file(string out_name, string message)
 
 int main()
 {
-	map<char, int> freq;
-	string text;
-	text = get_data("C:\\Users\\ƒмитрий\\Desktop\\warandpeace.txt");
-	freq = get_frequency(text);
-	Tree Huff;
-	Huff.Build_Tree(freq);
-	map<char, std::vector<bool>> table;
-	table = Huff.get_Table();
-	int len = 0;
-	/*for (map<char, int>::iterator it = freq.begin(); it != freq.end(); ++it)
-	{
-		cout << it->first << " - " << it->second << endl;
-	}*/
-	for (map<char, int>::iterator it = freq.begin(); it != freq.end(); ++it)
-	{
-		std::vector<bool> code = table[it->first];
-		int f = it->second;
-		len += (f * code.size());
+	SetConsoleOutputCP(1251);
+	SetConsoleCP(1251);
+	int arg;
+	cout << "(1)-encode; (0)-decode" << endl;
+	cin >> arg;
+	switch (arg) {
+		case 1:
+		{
+			string filename;
+			cout << "Enter the file name" << endl;
+			cin>>filename;
+			string filename_out;
+			cout << "Save in...." << endl;
+			cin>>filename_out;
+			string text;
+			text = get_data(filename);
+			map<char, int> freq;
+			freq = get_frequency(text);
+			Tree Huff;
+			Huff.Build_Tree(freq);
+			map<char, std::vector<bool>> table;
+			table = Huff.get_Table();
+			string encode;
+			encode = encode_text(text, table);
+			int len = 0;
+			for (map<char, int>::iterator it = freq.begin(); it != freq.end(); ++it)
+			{
+				std::vector<bool> code = table[it->first];
+				int f = it->second;
+				len += (f * code.size());
+			}
+			int en_len = encode.length() * 8;
+			int difference = en_len - len;
+			encode_output_file(filename_out, encode, freq, difference);
+			float coef = (float)text.length() / (encode.length() + 5 + freq.size() * 5);
+			cout << "Compression ratio:" << fixed << setprecision(2) << coef << endl;
+		}
+			break;
+		case 0:
+		{
+			string filename;
+			cout << "Enter the file name" << endl;
+			cin>>filename;
+			string filename_out;
+			cout << "Save in...." << endl;
+			cin>>filename_out;
+			string decode;
+			decode = decode_data(filename);
+			decode_output_file(filename_out, decode);
+		}	
+			break;
+		default:
+			cout << "Wrong input" << endl;
+			break;
 	}
-	string encode;
-	encode = encode_text(text, table);
-	int en_len = encode.length() * 8;
-	int difference = en_len - len; cout << difference << endl;
-	encode_output_file("C:\\Users\\ƒмитрий\\Desktop\\output.txt", encode, freq,difference);
-	string decode;
-	decode = decode_data("C:\\Users\\ƒмитрий\\Desktop\\output.txt");
-	decode_output_file("C:\\Users\\ƒмитрий\\Desktop\\decode.txt",decode);
-	float coef =(float) text.length()/(encode.length()+5+freq.size()*5);
-	cout << fixed << setprecision(2) <<coef << endl;
+
 	return 0;
 }
